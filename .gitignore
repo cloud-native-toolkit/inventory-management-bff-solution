@@ -1,0 +1,14 @@
+.idea/
+node_modules/
+*.iml
+dist/
+coverage/
+logs/
+pacts/
+.bluemix/
+.helm/
+schema.gql
+.scannerwork/
+test-report.xml
+
+/pipeline-build-config.json
