@@ -3,6 +3,8 @@
 # Declare variables to be passed into your templates.
 global: {}
 
+serviceUrl: "inventory-management-service:80"
+
 replicaCount: 1
 
 image:
