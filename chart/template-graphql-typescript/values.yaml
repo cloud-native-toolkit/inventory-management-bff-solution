@@ -6,6 +6,7 @@ global: {}
 serviceUrl: "inventory-management-svc:80"
 
 replicaCount: 1
+logLevel: "info"
 
 image:
   repository: replace
