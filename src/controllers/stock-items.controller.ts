@@ -4,6 +4,7 @@ import {HttpError} from 'typescript-rest/dist/server/model/errors';
 
 import {StockItemModel} from '../models';
 import {StockItemsApi} from '../services';
+import {LoggerApi} from '../logger';
 
 class BadGateway extends HttpError {
   constructor(message?: string) {
@@ -30,6 +31,8 @@ export class StockItemsController {
 
       return stockItems;
     } catch (err) {
+      this.logger.error('Error getting stockItems: ', err);
+
       throw new BadGateway('There was an error');
     }
   }
