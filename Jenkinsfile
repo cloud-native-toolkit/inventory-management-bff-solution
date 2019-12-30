@@ -15,13 +15,13 @@ def buildAgentName(String jobName, String buildNumber) {
         jobName = jobName.substring(0, 55);
     }
 
-    return "a.${jobName}.${buildNumber}".replace('_', '-').replace('/', '-').replace('-.', '.');
+    return "a.${jobName}${buildNumber}".replace('_', '-').replace('/', '-').replace('-.', '.');
 }
 
 def buildLabel = buildAgentName(env.JOB_NAME, env.BUILD_NUMBER);
 def namespace = env.NAMESPACE ?: "dev"
 def cloudName = env.CLOUD_NAME == "openshift" ? "openshift" : "kubernetes"
-def workingDir = env.CLOUD_NAME == "openshift" ? "/home/jenkins" : "/home/jenkins/agent"
+def workingDir = "/home/jenkins/agent"
 podTemplate(
    label: buildLabel,
    cloud: cloudName,
