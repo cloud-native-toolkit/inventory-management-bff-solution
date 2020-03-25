@@ -1,6 +1,6 @@
-import {TaskService, TaskServiceConfig} from '../../src/services';
 import {Container} from 'typescript-ioc';
 import {when} from 'q';
+import {TaskService, TaskServiceConfig} from '../../src/services/task.service';
 
 describe('task.service', () => {
   test('canary verifies test infrastructure', () => {

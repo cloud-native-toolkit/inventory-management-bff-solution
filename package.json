@@ -1,5 +1,5 @@
 {
-  "name": "template-graphql-typescript",
+  "name": "inventory-management-bff",
   "version": "1.0.0",
   "org": "my-org",
   "description": "",
@@ -65,7 +65,6 @@
     "@pact-foundation/pact-node": "^10.8.0",
     "@types/cors": "^2.8.4",
     "@types/express": "^4.17.4",
-    "@types/graphql": "^14.2.3",
     "@types/jest": "^25.2.1",
     "@types/jest-plugin-context": "^2.9.3",
     "@types/node": "^13.11.0",
