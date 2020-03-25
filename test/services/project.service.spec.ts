@@ -1,5 +1,5 @@
-import {ProjectServiceConfig, ProjectService} from '../../src/services';
 import {Container} from 'typescript-ioc';
+import {ProjectService, ProjectServiceConfig} from '../../src/services/project.service';
 
 describe('project.service', () => {
   test('canary verifies test infrastructure', () => {

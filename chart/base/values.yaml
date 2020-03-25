@@ -3,6 +3,9 @@
 # Declare variables to be passed into your templates.
 global: {}
 
+# The url to the Inventory Management Microservice (kube service name)
+serviceUrl: "inventory-management-svc:80"
+
 replicaCount: 1
 logLevel: "debug"
 
