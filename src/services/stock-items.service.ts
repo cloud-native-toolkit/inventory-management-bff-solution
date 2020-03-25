@@ -6,7 +6,7 @@ import {StockItemModel} from '../models';
 import {StockItemServiceConfig} from '../config';
 import {LoggerApi} from '../logger';
 
-class StockItem {
+export class StockItem {
   'id'?: string;
   'manufacturer'?: string;
   'name'?: string;
