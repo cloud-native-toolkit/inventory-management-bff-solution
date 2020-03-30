@@ -14,8 +14,8 @@
 def buildAgentName(String jobNameWithNamespace, String buildNumber, String namespace) {
     def jobName = removeNamespaceFromJobName(jobNameWithNamespace, namespace);
 
-    if (jobName.length() > 55) {
-        jobName = jobName.substring(0, 55);
+    if (jobName.length() > 52) {
+        jobName = jobName.substring(0, 52);
     }
 
     return "a.${jobName}${buildNumber}".replace('_', '-').replace('/', '-').replace('-.', '.');
