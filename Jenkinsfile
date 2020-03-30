@@ -121,6 +121,12 @@ spec:
     node(buildLabel) {
         container(name: 'node', shell: '/bin/bash') {
             checkout scm
+            stage('Setup') {
+                sh '''#!/bin/bash
+                    echo "IMAGE_NAME=$(basename -s .git `git config --get remote.origin.url` | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g')" > ./env-config
+                    chmod a+rw ./env-config
+                '''
+            }
             stage('Build') {
                 sh '''#!/bin/bash
                     npm install
@@ -177,8 +183,7 @@ spec:
                       --verbose \
                       -VV
 
-                    echo "IMAGE_VERSION=$(git describe --abbrev=0 --tags)" > ./env-config
-                    echo "IMAGE_NAME=$(basename -s .git `git config --get remote.origin.url` | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g')" >> ./env-config
+                    echo "IMAGE_VERSION=$(git describe --abbrev=0 --tags)" >> ./env-config
 
                     cat ./env-config
                 '''
