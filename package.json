@@ -13,10 +13,7 @@
   "pact": {
     "providerBaseUrl": "",
     "pactBrokerUrl": "",
-    "provider": "",
-    "pactUrls": [
-      "pacts/hello-consumer-typescript-template.json"
-    ]
+    "provider": ""
   },
   "scripts": {
     "clean": "rimraf dist",

@@ -137,11 +137,6 @@ spec:
                     npm run pact:publish --if-present
                 '''
             }
-            stage('Verify pact') {
-                sh '''#!/bin/bash
-                    npm run pact:verify --if-present
-                '''
-            }
             stage('Sonar scan') {
                 sh '''#!/bin/bash
 
@@ -175,11 +170,14 @@ spec:
                         PRE_RELEASE="--preRelease=${BRANCH}"
                     fi
 
-                    release-it patch --ci --no-npm ${PRE_RELEASE} \
-                      --hooks.after:release='echo "IMAGE_VERSION=${version}" > ./env-config' \
+                    release-it patch ${PRE_RELEASE} \
+                      --ci \
+                      --no-npm \
+                      --no-git.requireCleanWorkingDir \
                       --verbose \
                       -VV
 
+                    echo "IMAGE_VERSION=$(git describe --abbrev=0 --tags)" > ./env-config
                     echo "IMAGE_NAME=$(basename -s .git `git config --get remote.origin.url` | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g')" >> ./env-config
 
                     cat ./env-config
@@ -273,6 +271,8 @@ spec:
                         URL="http://${INGRESS_HOST}"
                     fi
 
+                    echo "PROVIDER_URL=${URL}" >> ./env-config
+
                     # sleep for 10 seconds to allow enough time for the server to start
                     sleep 30
 
@@ -285,10 +285,21 @@ spec:
                     fi;
                 '''
             }
+        }
+        container(name: 'node', shell: '/bin/bash') {
+            stage('Verify pact') {
+                sh '''#!/bin/bash
+                    . ./env-config
+
+                    npm run pact:verify --if-present -- -p ${PROVIDER_URL} -n ${IMAGE_NAME}
+                '''
+            }
+        }
+        container(name: 'ibmcloud', shell: '/bin/bash') {
             stage('Package Helm Chart') {
                 sh '''#!/bin/bash
 
-                if [[ -z "${ARTIFACTORY_ENCRYPT}" ]]; then
+                if [[ -z "${ARTIFACTORY_URL}" ]]; then
                   echo "Skipping Artifactory step as Artifactory is not installed or configured"
                   exit 0
                 fi
