@@ -173,6 +173,12 @@ spec:
     node(buildLabel) {
         container(name: 'node', shell: '/bin/bash') {
             checkout scm
+            stage('Setup') {
+                sh '''#!/bin/bash
+                    echo "IMAGE_NAME=$(basename -s .git `git config --get remote.origin.url` | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g')" > ./env-config
+                    chmod a+rw ./env-config
+                '''
+            }
             stage('Build') {
                 sh '''#!/bin/bash
                     npm install
@@ -187,11 +193,6 @@ spec:
             stage('Publish pacts') {
                 sh '''#!/bin/bash
                     npm run pact:publish --if-present
-                '''
-            }
-            stage('Verify pact') {
-                sh '''#!/bin/bash
-                    npm run pact:verify --if-present
                 '''
             }
             stage('Sonar scan') {
@@ -251,8 +252,7 @@ spec:
                       --verbose \
                       -VV
 
-                    echo "IMAGE_VERSION=$(git describe --abbrev=0 --tags)" > ./env-config
-                    echo "IMAGE_NAME=$(basename -s .git `git config --get remote.origin.url` | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g')" >> ./env-config
+                    echo "IMAGE_VERSION=$(git describe --abbrev=0 --tags)" >> ./env-config
 
                     cat ./env-config
                 '''
@@ -356,6 +356,8 @@ spec:
                         URL="http://${INGRESS_HOST}"
                     fi
 
+                    echo "PROVIDER_URL=${URL}" >> ./env-config
+
                     sleep_countdown=5
 
                     # sleep for 10 seconds to allow enough time for the server to start
@@ -373,6 +375,19 @@ spec:
                     echo "====================================================================="
                 '''
             }
+        }
+        container(name: 'node', shell: '/bin/bash') {
+            stage('Verify pact') {
+                sh '''#!/bin/bash
+                    . ./env-config
+
+                    cat ./env-config
+
+                    npm run pact:verify --if-present -- -p ${PROVIDER_URL} -n ${IMAGE_NAME}
+                '''
+            }
+        }
+        container(name: 'ibmcloud', shell: '/bin/bash') {
             stage('Package Helm Chart') {
                 sh '''#!/bin/bash
 
