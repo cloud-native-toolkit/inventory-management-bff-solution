@@ -15,6 +15,10 @@ const argv = yargs.options({
     providerBaseUrl: {
         alias: 'p',
         default: `${provider.protocol}://${provider.host}:${provider.port}${provider.contextRoot}`
+    },
+    providerName: {
+        alias: 'n',
+        default: config.name
     }
 }).argv;
 
