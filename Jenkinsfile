@@ -265,10 +265,10 @@ spec:
 
                     if [[ "${CLUSTER_TYPE}" == "openshift" ]]; then
                         ROUTE_HOST=$(kubectl get route/${IMAGE_NAME} --namespace ${ENVIRONMENT_NAME} --output=jsonpath='{ .spec.host }')
-                        URL="https://${ROUTE_HOST}"
+                        export URL="https://${ROUTE_HOST}"
                     else
                         INGRESS_HOST=$(kubectl get ingress/${IMAGE_NAME} --namespace ${ENVIRONMENT_NAME} --output=jsonpath='{ .spec.rules[0].host }')
-                        URL="http://${INGRESS_HOST}"
+                        export URL="http://${INGRESS_HOST}"
                     fi
 
                     echo "PROVIDER_URL=${URL}" >> ./env-config
@@ -290,6 +290,8 @@ spec:
             stage('Verify pact') {
                 sh '''#!/bin/bash
                     . ./env-config
+
+                    cat ./env-config
 
                     npm run pact:verify --if-present -- -p ${PROVIDER_URL} -n ${IMAGE_NAME}
                 '''
