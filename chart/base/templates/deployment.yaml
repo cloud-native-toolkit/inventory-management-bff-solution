@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "starter-kit.fullname" . }}
+  annotations:
+    app.openshift.io/vcs-ref: master
+    app.openshift.io/vcs-uri: https://github.com/gct-showcase/inventory-bff
   labels:
     app.kubernetes.io/name: {{ include "starter-kit.name" . }}
     helm.sh/chart: {{ include "starter-kit.chart" . }}
