@@ -248,7 +248,7 @@ spec:
                     git fetch
                     git fetch --tags
 
-                    git tags -l
+                    git tag -l
 
                     git checkout -b ${BRANCH} --track origin/${BRANCH}
                     git branch --set-upstream-to=origin/${BRANCH} ${BRANCH}
