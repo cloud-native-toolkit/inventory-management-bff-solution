@@ -14,7 +14,6 @@ metadata:
     app.kubernetes.io/name: {{ include "starter-kit.name" . }}
     helm.sh/chart: {{ include "starter-kit.chart" . }}
     app.openshift.io/runtime: nodejs
-    app.kubernetes.io/part-of: inventory
     app.kubernetes.io/instance: {{ .Release.Name }}
     app: {{ .Release.Name }}
     {{- if .Values.partOf }}
