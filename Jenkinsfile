@@ -245,6 +245,11 @@ spec:
                     git tag -l
 
                     COMMIT_HASH=$(git rev-parse HEAD)
+                    git fetch
+                    git fetch --tags
+
+                    git tags -l
+
                     git checkout -b ${BRANCH} --track origin/${BRANCH}
                     git branch --set-upstream-to=origin/${BRANCH} ${BRANCH}
                     git reset --hard ${COMMIT_HASH}

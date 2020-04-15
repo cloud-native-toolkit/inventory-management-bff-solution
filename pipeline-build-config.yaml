@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  name: ibm-garage-cloud.inventory-management-bff-solution.dev
+  labels:
+    app: inventory-management-bff-solution
+spec:
+  triggers:
+    - type: GitHub
+      github:
+        secret: secret101
+  source:
+    git:
+      uri: >-
+        https://github.com/ibm-garage-cloud/inventory-management-bff-solution.git
+      ref: dev
+  strategy:
+    jenkinsPipelineStrategy:
+      jenkinsfilePath: Jenkinsfile
+      env:
+        - name: CLOUD_NAME
+          value: openshift
+        - name: NAMESPACE
+          value: pipeline
+        - name: BRANCH
+          value: dev
