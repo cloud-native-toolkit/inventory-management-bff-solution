@@ -153,6 +153,8 @@ spec:
           value: /home/devops
         - name: ENVIRONMENT_NAME
           value: ${env.NAMESPACE}
+        - name: BRANCH
+          value: ${branch}
     - name: trigger-cd
       image: docker.io/garagecatalyst/ibmcloud-dev:1.0.10
       tty: true
@@ -173,15 +175,9 @@ spec:
     node(buildLabel) {
         container(name: 'node', shell: '/bin/bash') {
             checkout scm
-            stage('Setup') {
-                sh '''#!/bin/bash
-                    echo "IMAGE_NAME=$(basename -s .git `git config --get remote.origin.url` | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g')" > ./env-config
-                    chmod a+rw ./env-config
-                '''
-            }
             stage('Build') {
                 sh '''#!/bin/bash
-                    npm install
+                    npm install --unsafe-perm
                     npm run build --if-present
                 '''
             }
@@ -193,6 +189,11 @@ spec:
             stage('Publish pacts') {
                 sh '''#!/bin/bash
                     npm run pact:publish --if-present
+                '''
+            }
+            stage('Verify pact') {
+                sh '''#!/bin/bash
+                    npm run pact:verify --if-present
                 '''
             }
             stage('Sonar scan') {
@@ -219,12 +220,12 @@ spec:
 
                     git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_USER; echo password=\\$GIT_AUTH_PWD; }; f"
 
-                    git fetch origin ${BRANCH}
-                    git fetch --tags
-                    git checkout ${BRANCH}
+                    COMMIT_HASH=$(git rev-parse HEAD)
+                    git checkout -b ${BRANCH} --track origin/${BRANCH}
                     git branch --set-upstream-to=origin/${BRANCH} ${BRANCH}
+                    git reset --hard ${COMMIT_HASH}
 
-                    git config --global user.name "Jenkins Pipeline"
+                    git config --global user.name "$GIT_AUTH_USER"
                     git config --global user.email "jenkins@ibmcloud.com"
 
                     if [[ "${BRANCH}" == "master" ]] && [[ $(git describe --tag `git rev-parse HEAD`) =~ (^[0-9]+.[0-9]+.[0-9]+$) ]] || \
@@ -252,7 +253,9 @@ spec:
                       --verbose \
                       -VV
 
-                    echo "IMAGE_VERSION=$(git describe --abbrev=0 --tags)" >> ./env-config
+                    echo "IMAGE_VERSION=$(git describe --abbrev=0 --tags)" > ./env-config
+                    echo "IMAGE_NAME=$(basename -s .git `git config --get remote.origin.url` | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g')" >> ./env-config
+                    echo "REPO_URL=$(git config --get remote.origin.url)" >> ./env-config
 
                     cat ./env-config
                 '''
@@ -323,6 +326,8 @@ spec:
                     cat ${CHART_PATH}/values.yaml | \
                         yq w - nameOverride "${IMAGE_NAME}" | \
                         yq w - fullnameOverride "${IMAGE_NAME}" | \
+                        yq w - vcsInfo.repoUrl "${REPO_URL}" | \
+                        yq w - vcsInfo.branch "${BRANCH}" | \
                         yq w - image.repository "${IMAGE_REPOSITORY}" | \
                         yq w - image.tag "${IMAGE_VERSION}" | \
                         yq w - ingress.enabled "${INGRESS_ENABLED}" | \
@@ -356,8 +361,6 @@ spec:
                         URL="http://${INGRESS_HOST}"
                     fi
 
-                    echo "PROVIDER_URL=${URL}" >> ./env-config
-
                     sleep_countdown=5
 
                     # sleep for 10 seconds to allow enough time for the server to start
@@ -375,19 +378,6 @@ spec:
                     echo "====================================================================="
                 '''
             }
-        }
-        container(name: 'node', shell: '/bin/bash') {
-            stage('Verify pact') {
-                sh '''#!/bin/bash
-                    . ./env-config
-
-                    cat ./env-config
-
-                    npm run pact:verify --if-present -- -p ${PROVIDER_URL} -n ${IMAGE_NAME}
-                '''
-            }
-        }
-        container(name: 'ibmcloud', shell: '/bin/bash') {
             stage('Package Helm Chart') {
                 sh '''#!/bin/bash
 
