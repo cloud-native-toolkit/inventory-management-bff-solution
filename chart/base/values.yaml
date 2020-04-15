@@ -4,7 +4,7 @@
 global: {}
 
 # The url to the Inventory Management Microservice (kube service name)
-serviceUrl: "inventory-svc:80"
+connectsTo: inventory-svc
 
 replicaCount: 1
 logLevel: "debug"
@@ -47,7 +47,5 @@ vcsInfo:
   branch: ""
 
 partOf: ""
-
-connectsTo: ""
 
 runtime: nodejs

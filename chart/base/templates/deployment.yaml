@@ -64,7 +64,7 @@ spec:
             - name: LOG_LEVEL
               value: {{ .Values.logLevel | quote }}
             - name: SERVICE_URL
-              value: {{ .Values.serviceUrl | quote }}
+              value: {{ printf "%s:80" .Values.connectsTo | quote }}
           envFrom:
             - configMapRef:
                 name: {{ default "jaeger-config" .Values.jaegerConfigName }}
