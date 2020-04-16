@@ -40,7 +40,7 @@ vcsInfo:
   repoUrl: ""
   branch: ""
 
-partOf: ""
+partOf: inventory
 
 connectsTo: inventory-svc
 
