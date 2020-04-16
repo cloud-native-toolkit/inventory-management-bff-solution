@@ -3,9 +3,6 @@
 # Declare variables to be passed into your templates.
 global: {}
 
-# The url to the Inventory Management Microservice (kube service name)
-connectsTo: inventory-svc
-
 replicaCount: 1
 logLevel: "debug"
 
@@ -47,5 +44,7 @@ vcsInfo:
   branch: ""
 
 partOf: ""
+
+connectsTo: inventory-svc
 
 runtime: nodejs
