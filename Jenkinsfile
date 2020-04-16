@@ -1,3 +1,5 @@
+def pipelineVersion='1.1.1'
+println "Pipeline version: ${pipelineVersion}"
 /*
  * This is a vanilla Jenkins pipeline that relies on the Jenkins kubernetes plugin to dynamically provision agents for
  * the build containers.
@@ -220,17 +222,14 @@ spec:
 
                     git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_USER; echo password=\\$GIT_AUTH_PWD; }; f"
 
-                    COMMIT_HASH=$(git rev-parse HEAD)
                     git fetch
                     git fetch --tags
-
                     git tag -l
 
                     git checkout -b ${BRANCH} --track origin/${BRANCH}
                     git branch --set-upstream-to=origin/${BRANCH} ${BRANCH}
-                    git reset --hard ${COMMIT_HASH}
 
-                    git config --global user.name "$GIT_AUTH_USER"
+                    git config --global user.name "Jenkins Pipeline"
                     git config --global user.email "jenkins@ibmcloud.com"
 
                     if [[ "${BRANCH}" == "master" ]] && [[ $(git describe --tag `git rev-parse HEAD`) =~ (^[0-9]+.[0-9]+.[0-9]+$) ]] || \
