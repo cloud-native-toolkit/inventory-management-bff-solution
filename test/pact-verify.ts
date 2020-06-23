@@ -80,7 +80,7 @@ async function verifyPact() {
         return null;
     });
 
-    if (!options || true) {
+    if (!options) {
         return;
     }
 
@@ -96,19 +96,22 @@ async function verifyPact() {
         }
     }
 
-    process.env.JAEGER_DISABLED = "true";
-
     console.log('Starting server');
     const server: ApiServer = await buildApiServer().start();
 
     try {
         await new Verifier(options).verifyProvider();
     } finally {
+        console.log('Stopping server');
         await server.stop();
+        console.log('Server stopped');
     }
 }
 
-verifyPact().catch(err => {
+verifyPact().then(() => {
+    console.log('Pact verify complete');
+    process.exit(0);
+}).catch(err => {
     console.log('Error verifying provider', err);
     process.exit(1);
 });
