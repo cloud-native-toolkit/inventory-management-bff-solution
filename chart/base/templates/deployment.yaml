@@ -41,7 +41,6 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-
           ports:
             - name: http
               containerPort: {{ .Values.image.port }}
@@ -63,6 +62,13 @@ spec:
               value: {{ .Values.logLevel | quote }}
             - name: SERVICE_URL
               value: {{ printf "%s:80" .Values.connectsTo | quote }}
+          envFrom:
+            - configMapRef:
+                name: {{ default "jaeger-config" .Values.jaegerConfigName }}
+                optional: true
+            - secretRef:
+                name: {{ default "jaeger-access" .Values.jaegerSecretName }}
+                optional: true
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

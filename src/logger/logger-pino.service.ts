@@ -2,6 +2,8 @@ import * as pino from 'pino';
 import * as expressPino from 'express-pino-logger';
 
 import {LoggerApi} from './logger.api';
+import {getNamespace} from 'cls-hooked';
+import {TraceConstants} from '../util/trace-constants';
 
 // tslint:disable
 class ChildLogger extends LoggerApi {
@@ -40,11 +42,12 @@ class ChildLogger extends LoggerApi {
   }
 
   child(component: string): LoggerApi {
-    if (ChildLogger._children[component]) {
-      return ChildLogger._children[component];
-    }
+    const clsNamespace = getNamespace(TraceConstants.TRACE_NAMESPACE);
 
-    return ChildLogger._children[component] = new ChildLogger(this.logger.child({component}));
+    const traceContext = clsNamespace ? clsNamespace.get(TraceConstants.TRACE_CONTEXT) : {};
+
+    return new ChildLogger(this.logger.child(
+      Object.assign({component}, traceContext)));
   }
 
   apply(app: { use: (middleware: any) => void }): void {

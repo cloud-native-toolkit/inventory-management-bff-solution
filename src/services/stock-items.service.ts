@@ -5,6 +5,7 @@ import {StockItemsApi} from './stock-items.api';
 import {StockItemModel} from '../models';
 import {StockItemServiceConfig} from '../config';
 import {LoggerApi} from '../logger';
+import {opentracingPlugin} from '../util/opentracing/superagent-plugin';
 
 export class BackendStockItem {
   'id'?: string;
@@ -26,7 +27,10 @@ export class StockItemsService implements StockItemsApi {
 
   async listStockItems(): Promise<StockItemModel[]> {
     try {
+      this.logger.info('Listing stock items');
+
       const response: Response = await get(this.config.baseUrl + '/stock-items')
+        .use(opentracingPlugin())
         .set('Accept', 'application/json');
 
       return this.mapStockItems(response.body);
