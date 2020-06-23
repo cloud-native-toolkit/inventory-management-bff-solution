@@ -96,6 +96,8 @@ async function verifyPact() {
         }
     }
 
+    process.env.JAEGER_DISABLED = "true";
+
     console.log('Starting server');
     const server: ApiServer = await buildApiServer().start();
 
