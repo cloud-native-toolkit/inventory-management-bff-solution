@@ -9,9 +9,9 @@ import {isSpan} from './guards';
  Usage:
    superagent.get(url).use(opentracingPlugin(span));
  */
-export function opentracingPlugin(childOf?: Span): Plugin {
+export function opentracingPlugin({tracer = globalTracer(), childOf}: {tracer?: Tracer, childOf?: Span} = {}): Plugin {
 
-  const span: Span = globalTracer().startSpan(
+  const span: Span = tracer.startSpan(
     'http_request',
     isSpan(childOf) ? {childOf} : {});
 
@@ -20,7 +20,6 @@ export function opentracingPlugin(childOf?: Span): Plugin {
     span.setTag(Tags.HTTP_METHOD, req.method);
 
     const headers = {};
-    const tracer: Tracer = span.tracer();
     tracer.inject(span, FORMAT_HTTP_HEADERS, headers);
 
     req.set(headers);

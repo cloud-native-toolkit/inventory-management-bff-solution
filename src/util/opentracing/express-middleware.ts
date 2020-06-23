@@ -24,8 +24,7 @@ export const buildTraceContext = (context: any) => {
   return context;
 }
 
-export function opentracingMiddleware(options: {tracer?: Tracer} = {}) {
-  const tracer = options.tracer || globalTracer();
+export function opentracingMiddleware({tracer = globalTracer()}: {tracer?: Tracer} = {}) {
 
   return (req, res, next) => {
     clsNamespace.bindEmitter(req);

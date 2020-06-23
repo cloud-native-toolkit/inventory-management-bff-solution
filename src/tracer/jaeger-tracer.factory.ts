@@ -6,6 +6,7 @@ import {LoggerApi} from '../logger';
 
 const packageConfig = require('../../package.json');
 
+let tracer: Tracer;
 function initTracer(): Tracer {
   const tags = {};
   tags[`${packageConfig.name}.version`] = packageConfig.version;
@@ -23,16 +24,19 @@ function initTracer(): Tracer {
     logger,
   };
 
-  const tracer: JaegerTracer = initTracerFromEnv(config, options);
+  tracer = initTracerFromEnv(config, options);
 
   initGlobalTracer(tracer);
 
   return tracer;
 }
-initTracer();
 
 const jaegerTracerFactory: ObjectFactory = () => {
-  return globalTracer();
+  if (!tracer) {
+    tracer = initTracer();
+  }
+
+  return tracer;
 }
 
 export default jaegerTracerFactory;
