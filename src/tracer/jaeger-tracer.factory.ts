@@ -14,7 +14,7 @@ function initTracer(): JaegerTracer {
   const logger: LoggerApi = Container.get(LoggerApi);
 
   const config: TracingConfig = {
-    serviceName: packageConfig.name,
+    serviceName: process.env.IMAGE_NAME || packageConfig.name,
     reporter: {
       logSpans: true
     }
