@@ -13,7 +13,7 @@ import {TraceConstants} from '../trace-constants';
  */
 export function opentracingPlugin({tracer = globalTracer(), childOf}: {tracer?: Tracer, childOf?: Span} = {}): Plugin {
   const clsNamespace = getNamespace(TraceConstants.NAMESPACE);
-  const parentSpan = childOf || clsNamespace.get(TraceConstants.SPAN);
+  const parentSpan = childOf || clsNamespace ? clsNamespace.get(TraceConstants.SPAN) : undefined;
 
   const span: Span = tracer.startSpan(
     'http_request',

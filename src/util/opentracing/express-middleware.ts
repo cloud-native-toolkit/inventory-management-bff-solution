@@ -1,4 +1,5 @@
 import {FORMAT_HTTP_HEADERS, FORMAT_TEXT_MAP, globalTracer, Span, Tags, Tracer} from 'opentracing';
+import {NextFunction, Request, Response} from 'express';
 import {createNamespace} from 'cls-hooked';
 import * as url from "url";
 
@@ -42,7 +43,7 @@ export const buildTraceContext = (context: any) => {
 
 export function opentracingMiddleware({tracer = globalTracer()}: {tracer?: Tracer} = {}) {
 
-  return (req, res, next) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     clsNamespace.bindEmitter(req);
     clsNamespace.bindEmitter(res);
 

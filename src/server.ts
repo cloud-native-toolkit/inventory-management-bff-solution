@@ -38,6 +38,8 @@ export class ApiServer {
         schema: (await buildGraphqlSchema() as any),
       });
 
+      graphqlServer.express.use(opentracingMiddleware({tracer: this.tracer}));
+
       const apiRouter: express.Router = express.Router();
 
       Server.loadControllers(
@@ -48,7 +50,6 @@ export class ApiServer {
         __dirname,
       );
 
-      graphqlServer.express.use(opentracingMiddleware({tracer: this.tracer}));
       this.logger.apply(graphqlServer.express);
       graphqlServer.express.use(apiRouter);
 

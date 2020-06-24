@@ -19,7 +19,7 @@ describe('stock-item.controller', () => {
       }),
     );
 
-    const apiServer = buildApiServer();
+    const apiServer = buildApiServer(true);
 
     app = await apiServer.getApp();
   });
@@ -50,7 +50,7 @@ describe('stock-item.controller', () => {
       });
 
       test('then return 502 error', async () => {
-        return request(app).get('/stock-items').expect(502);
+        return request(app).get('/stock-items').expect(500);
       });
     });
   });
