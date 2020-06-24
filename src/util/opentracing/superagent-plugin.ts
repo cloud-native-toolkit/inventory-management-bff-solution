@@ -2,6 +2,8 @@ import {Plugin, SuperAgentRequest} from 'superagent';
 import {FORMAT_HTTP_HEADERS, globalTracer, Span, Tags, Tracer} from 'opentracing';
 
 import {isSpan} from './guards';
+import {getNamespace} from 'cls-hooked';
+import {TraceConstants} from '../trace-constants';
 
 /*
  This component provides a plugin to inject the opentracing headers into a superagent request
@@ -10,10 +12,12 @@ import {isSpan} from './guards';
    superagent.get(url).use(opentracingPlugin(span));
  */
 export function opentracingPlugin({tracer = globalTracer(), childOf}: {tracer?: Tracer, childOf?: Span} = {}): Plugin {
+  const clsNamespace = getNamespace(TraceConstants.NAMESPACE);
+  const parentSpan = childOf || clsNamespace.get(TraceConstants.SPAN);
 
   const span: Span = tracer.startSpan(
     'http_request',
-    isSpan(childOf) ? {childOf} : {});
+    isSpan(parentSpan) ? {childOf: parentSpan} : {});
 
   return (req: SuperAgentRequest) => {
     span.setTag(Tags.HTTP_URL, req.url);
@@ -21,7 +25,6 @@ export function opentracingPlugin({tracer = globalTracer(), childOf}: {tracer?: 
 
     const headers = {};
     tracer.inject(span, FORMAT_HTTP_HEADERS, headers);
-
     req.set(headers);
 
     req.on('error', (error) => {

@@ -1,5 +1,6 @@
 
 export enum TraceConstants {
-  TRACE_NAMESPACE = 'trace',
-  TRACE_CONTEXT = 'traceContext'
+  NAMESPACE = 'trace',
+  TRACE_CONTEXT = 'traceContext',
+  SPAN = 'span'
 }
