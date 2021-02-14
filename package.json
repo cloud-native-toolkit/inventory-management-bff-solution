@@ -46,7 +46,7 @@
     "graphql-yoga": "^1.18.3",
     "pino": "^6.1.1",
     "reflect-metadata": "^0.1.13",
-    "superagent": "^5.2.2",
+    "superagent": "^5.3.1",
     "tslib": "^1.11.1",
     "type-graphql": "^0.17.4",
     "typescript-ioc": "^3.2.1",
