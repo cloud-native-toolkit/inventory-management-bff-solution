@@ -44,7 +44,7 @@
     "express-pino-logger": "^4.0.0",
     "graphql": "^14.6.0",
     "graphql-yoga": "^1.18.3",
-    "pino": "^6.1.1",
+    "pino": "^6.11.0",
     "reflect-metadata": "^0.1.13",
     "superagent": "^5.2.2",
     "tslib": "^1.11.1",
