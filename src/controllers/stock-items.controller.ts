@@ -18,7 +18,11 @@ export class StockItemsController {
   @Inject
   service: StockItemsApi;
   @Inject
-  logger: LoggerApi;
+  private _logger: LoggerApi;
+
+  get logger(): LoggerApi {
+    return this._logger.child('StockItemsController');
+  }
 
   @GET
   async listStockItems(): Promise<StockItemModel[]> {

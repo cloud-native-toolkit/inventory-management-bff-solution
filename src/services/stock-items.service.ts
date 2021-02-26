@@ -26,6 +26,8 @@ export class StockItemsService implements StockItemsApi {
   }
 
   async listStockItems(): Promise<StockItemModel[]> {
+    this.logger.info('Getting stock items');
+
     try {
       const response: Response = await superagent().get(this.config.baseUrl + '/stock-items')
         .set('Accept', 'application/json');
