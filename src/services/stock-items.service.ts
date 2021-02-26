@@ -1,10 +1,11 @@
 import {Inject} from 'typescript-ioc';
-import {get, Response} from 'superagent';
+import {Response} from 'superagent';
 
 import {StockItemsApi} from './stock-items.api';
 import {StockItemModel} from '../models';
 import {StockItemServiceConfig} from '../config';
 import {LoggerApi} from '../logger';
+import {default as superagent} from '../util/opentracing/superagent-wrapper';
 
 export class BackendStockItem {
   'id'?: string;
@@ -26,7 +27,7 @@ export class StockItemsService implements StockItemsApi {
 
   async listStockItems(): Promise<StockItemModel[]> {
     try {
-      const response: Response = await get(this.config.baseUrl + '/stock-items')
+      const response: Response = await superagent().get(this.config.baseUrl + '/stock-items')
         .set('Accept', 'application/json');
 
       return this.mapStockItems(response.body);

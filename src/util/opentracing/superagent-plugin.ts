@@ -9,7 +9,7 @@ import {TraceConstants} from './trace-constants';
  This component provides a plugin to inject the opentracing headers into a superagent request
 
  Usage:
-   superagent.get(url).use(opentracingPlugin(span));
+   superagent.get(url).use(opentracingPlugin({span}));
  */
 export function opentracingPlugin({tracer = globalTracer(), span}: {tracer?: Tracer, span?: Span} = {}): Plugin {
 
