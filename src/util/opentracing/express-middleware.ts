@@ -1,6 +1,5 @@
 import {FORMAT_HTTP_HEADERS, FORMAT_TEXT_MAP, globalTracer, Span, Tags, Tracer} from 'opentracing';
 import {createNamespace} from 'cls-hooked';
-import * as url from "url";
 
 import {TraceConstants} from './trace-constants';
 import {omit} from '../object';
@@ -38,8 +37,7 @@ export function opentracingMiddleware({tracer = globalTracer()}: {tracer?: Trace
     clsNamespace.bindEmitter(res);
 
     const wireCtx = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
-    const pathname = url.parse(req.url).pathname;
-    const span: Span = tracer.startSpan(pathname, {childOf: wireCtx});
+    const span: Span = tracer.startSpan(req.path, {childOf: wireCtx});
     span.logEvent("request_received", {});
 
     const headers = {};
@@ -47,7 +45,7 @@ export function opentracingMiddleware({tracer = globalTracer()}: {tracer?: Trace
 
     // include some useful tags on the trace
     span.setTag(Tags.HTTP_METHOD, req.method);
-    span.setTag(Tags.SPAN_KIND, "server");
+    span.setTag(Tags.SPAN_KIND, Tags.SPAN_KIND_RPC_CLIENT);
     span.setTag(Tags.HTTP_URL, req.url);
 
     // include trace ID in headers so that we can debug slow requests we see in
@@ -64,7 +62,7 @@ export function opentracingMiddleware({tracer = globalTracer()}: {tracer?: Trace
       span.logEvent("request_finished", {});
       // Route matching often happens after the middleware is run. Try changing the operation name
       // to the route matcher.
-      const opName = (req.route && req.route.path) || pathname;
+      const opName = (req.route && req.route.path) || req.path;
       span.setOperationName(opName);
       span.setTag("http.status_code", res.statusCode);
       if (res.statusCode >= 500) {
