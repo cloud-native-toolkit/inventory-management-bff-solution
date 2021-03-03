@@ -16,11 +16,13 @@ export function opentracingPlugin({tracer = globalTracer(), span}: {tracer?: Tra
   const clsNamespace: Namespace = getNamespace(TraceConstants.NAMESPACE);
   const childOf: Span = span || clsNamespace ? clsNamespace.get(TraceConstants.SPAN) : undefined;
 
-  const requestSpan: Span = tracer.startSpan(
-    'http_request',
-    isSpan(childOf) ? {childOf} : {});
-
   return (req: SuperAgentRequest) => {
+    const url = new URL(req.url);
+
+    const requestSpan: Span = tracer.startSpan(
+      url.pathname,
+      isSpan(childOf) ? {childOf} : {});
+
     requestSpan.setTag(Tags.HTTP_URL, req.url);
     requestSpan.setTag(Tags.HTTP_METHOD, req.method);
 
