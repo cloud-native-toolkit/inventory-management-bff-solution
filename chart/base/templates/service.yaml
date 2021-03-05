@@ -4,9 +4,10 @@ metadata:
   name: {{ include "starter-kit.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "starter-kit.name" . }}
+    app: {{ include "starter-kit.name" . }}
+    service: {{ include "starter-kit.name" . }}
     helm.sh/chart: {{ include "starter-kit.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app: {{ .Release.Name }}
 spec:
   type: {{ .Values.service.type }}
   ports:

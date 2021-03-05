@@ -12,9 +12,10 @@ metadata:
   {{- end }}
   labels:
     app.kubernetes.io/name: {{ include "starter-kit.name" . }}
+    app: {{ include "starter-kit.name" . }}
+    version: {{ .Values.image.tag }}
     helm.sh/chart: {{ include "starter-kit.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app: {{ .Release.Name }}
     {{- if .Values.partOf }}
     app.kubernetes.io/part-of: {{ .Values.partOf }}
     {{- end}}
@@ -26,11 +27,16 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "starter-kit.name" . }}
+      app: {{ include "starter-kit.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: {{ .Values.serviceMesh.sidecar | default "false" | quote }}
       labels:
         app.kubernetes.io/name: {{ include "starter-kit.name" . }}
+        app: {{ include "starter-kit.name" . }}
+        version: {{ .Values.image.tag }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       {{- if .Values.image.secretName }}
