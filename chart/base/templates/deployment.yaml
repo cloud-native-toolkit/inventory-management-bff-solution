@@ -15,7 +15,7 @@ metadata:
     app: {{ include "starter-kit.name" . }}
     version: {{ .Values.image.tag | quote }}
     helm.sh/chart: {{ include "starter-kit.chart" . }}
-    app.kubernetes.io/instance: {{ include "starter-kit.name" . }}
+    app.kubernetes.io/instance: {{ include "starter-kit.fullname" . }}
     {{- if .Values.partOf }}
     app.kubernetes.io/part-of: {{ .Values.partOf }}
     {{- end}}
