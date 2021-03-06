@@ -69,3 +69,22 @@ Create chart name and version as used by the chart label.
 {{- printf "" -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+abstract: |
+  Joins a list of values into a comma seperated string with double quotes
+  around each value.
+values: |
+  test:
+    - foo
+    - bar
+usage: |
+  {{ include "helm-toolkit.utils.joinListWithCommaAndDoubleQuotes" .Values.test }}
+return: |
+  'foo','bar'
+*/}}
+
+{{- define "helm-toolkit.utils.joinListWithCommaAndDoubleQuotes" -}}
+{{- $local := dict "first" true -}}
+{{- range $k, $v := . -}}{{- if not $local.first -}},{{- end -}}"{{- $v -}}"{{- $_ := set $local "first" false -}}{{- end -}}
+{{- end -}}
