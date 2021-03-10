@@ -65,8 +65,10 @@ spec:
                   fieldPath: metadata.name
             - name: LOG_LEVEL
               value: {{ .Values.logLevel | quote }}
+            {{- if .Values.connectsTo }}
             - name: SERVICE_URL
-              value: {{ printf "%s:80" .Values.connectsTo | quote }}
+              value: {{ printf "%s:80" (index .Values.connectsTo 0) | quote }}
+            {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ default "jaeger-config" .Values.jaegerConfigName }}
