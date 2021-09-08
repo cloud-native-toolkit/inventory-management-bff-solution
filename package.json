@@ -52,7 +52,7 @@
     "tslib": "^2.1.0",
     "type-graphql": "^1.1.1",
     "typescript-ioc": "^3.2.2",
-    "typescript-rest": "^3.0.2",
+    "typescript-rest": "^3.0.4",
     "typescript-rest-ioc": "^1.0.0",
     "typescript-rest-swagger": "^1.1.5"
   },
